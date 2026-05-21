@@ -4,6 +4,22 @@ An enterprise-grade industrial automation and control project focusing on the de
 
 ---
 
+## 🖥️ Live HMI / SCADA Simulation
+
+Here is the system running in real-time within the WinCC Runtime environment:
+
+### 1. Process Control Interface
+*Displays the sequential state-machine logic, conveyor movement, bottle positioning, and emergency control routines.*
+
+![Process Control Interface](images/control-interface.gif)
+
+### 2. Energy Management & Telemetry Dashboard
+*Displays real-time KPI processing, including Specific Energy Consumption (SEC), carbon footprint calculations, and predictive maintenance wear counters.*
+
+![Energy Management Dashboard](images/monitoring-dashboard.gif)
+
+---
+
 ## 🏭 Plant Layout & Subsystem Architecture
 
 The physical bottling plant is divided into three core, synchronized subsystems designed according to standard industrial instrumentation and piping practices:

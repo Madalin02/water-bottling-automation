@@ -1,51 +1,51 @@
 # Advanced Water Bottling Automation System (Digital Twin Simulation)
 
-An enterprise-grade industrial automation and control project focusing on the design, mathematical modeling, and virtual implementation of an automated water bottling plant line[cite: 6]. Developed as a high-fidelity **Digital Twin** inside Siemens TIA Portal V20 and WinCC, the system emulates a real-world industrial environment, combining precise physical process loops with Industry 4.0 predictive maintenance and production telemetry[cite: 6, 10, 36].
+An enterprise-grade industrial automation and control project focusing on the design, mathematical modeling, and virtual implementation of an automated water bottling plant line. Developed as a high-fidelity **Digital Twin** inside Siemens TIA Portal V20 and WinCC, the system emulates a real-world industrial environment, combining precise physical process loops with Industry 4.0 predictive maintenance and production telemetry.
 
 ---
 
 ## 🏭 Plant Layout & Subsystem Architecture
 
-The physical bottling plant is divided into three core, synchronized subsystems designed according to standard industrial instrumentation and piping practices[cite: 47, 55]:
+The physical bottling plant is divided into three core, synchronized subsystems designed according to standard industrial instrumentation and piping practices:
 
 1. **Storage & Supply System (TK-01):**
-   * A large-scale water reservoir managed by a discrete logic-based hysteresis controller[cite: 48, 49].
-   * Automates the tank refilling loop, forcing high-low boundary constraints strictly between **20% (Low Limit)** and **95% (High Limit)** of the total volume capacity to prevent dry-running or overflow scenarios[cite: 49].
+   * A large-scale water reservoir managed by a discrete logic-based hysteresis controller.
+   * Automates the tank refilling loop, forcing high-low boundary constraints strictly between **20% (Low Limit)** and **95% (High Limit)** of the total volume capacity to prevent dry-running or overflow scenarios.
 2. **Transfer & Dosing System (P-01 & V-01):**
-   * Features a proportional hydraulic supply pump (P-01) that pipes raw material dynamically into a gravity-fed dosing valve assembly (V-01)[cite: 50, 51].
+   * Features a proportional hydraulic supply pump (P-01) that pipes raw material dynamically into a gravity-fed dosing valve assembly (V-01).
    * The valve utilizes discrete timing intervals to dispense a precise volume of fluid into each targeted container.
 3. **Conveyor & Packaging Assembly:**
-   * A motor-driven conveyor belt system orchestrated via a deterministic finite state machine (FSM)[cite: 52, 128].
-   * Leverages simulated proximity sensors to align the physical axis of each bottle perfectly beneath the discharge nozzle of the dosing valve[cite: 53].
+   * A motor-driven conveyor belt system orchestrated via a deterministic finite state machine (FSM).
+   * Leverages simulated proximity sensors to align the physical axis of each bottle perfectly beneath the discharge nozzle of the dosing valve.
 
 ---
 
 ## 🚀 Key Automation Features
 
-* **Hybrid Control Strategy:** Integrates sequential state-machine interlocks for safe material transport with continuous adaptive linear checks and hysteresis loops[cite: 8].
-* **Defect Prevention & Anti-Cavitation Safety:** Hardware protection interlocks are embedded directly into the PLC code (e.g., automatically tripping pump P-01 if the TK-01 level drops below 5% to safeguard against pump cavitation)[cite: 61, 62].
-* **State Retentivity & Safe Recovery:** In the event of an unpredicted power loss, software crash, or an Emergency Stop (EMG STOP) engagement, the system triggers a memory freeze[cite: 64, 65]. All current conveyor positions, batch metrics, and filling progress are saved in retentive non-volatile Data Blocks (DBs) to ensure zero raw material waste upon recovery[cite: 65, 161].
-* **Industry 4.0 Efficiency Metrics:** The logic natively tracks real-time Carbon Footprint (kg CO2 equivalents), automated lifetime operational runtime hours for predictive maintenance, and Specific Energy Consumption (SEC)[cite: 9, 145].
+* **Hybrid Control Strategy:** Integrates sequential state-machine interlocks for safe material transport with continuous adaptive linear checks and hysteresis loops.
+* **Defect Prevention & Anti-Cavitation Safety:** Hardware protection interlocks are embedded directly into the PLC code (e.g., automatically tripping pump P-01 if the TK-01 level drops below 5% to safeguard against pump cavitation).
+* **State Retentivity & Safe Recovery:** In the event of an unpredicted power loss, software crash, or an Emergency Stop (EMG STOP) engagement, the system triggers a memory freeze. All current conveyor positions, batch metrics, and filling progress are saved in retentive non-volatile Data Blocks (DBs) to ensure zero raw material waste upon recovery.
+* **Industry 4.0 Efficiency Metrics:** The logic natively tracks real-time Carbon Footprint (kg CO2 equivalents), automated lifetime operational runtime hours for predictive maintenance, and Specific Energy Consumption (SEC).
 
 ---
 
 ## 🛠️ Technology Stack & Industrial Specifications
 
-* **Automation Suite:** Siemens TIA Portal V20 (Professional / Advanced) [cite: 6, 36]
-* **HMI / SCADA Layer:** Siemens WinCC Unified / Advanced V20 [cite: 110, 160]
-* **Emulated PLC Hardware:** SIMATIC S7-1500 (CPU 1516-3 PN/DP) [cite: 106]
-* **Simulation Testing Engine:** Siemens S7-PLCSIM V20 / PLCSIM Advanced [cite: 110, 160]
-* **Control Languages:** SCL (Structured Control Language / Structured Text) [cite: 163]
-* **Network Protocol:** PROFINET / Industrial Ethernet architecture [cite: 107]
+* **Automation Suite:** Siemens TIA Portal V20 (Professional / Advanced)
+* **HMI / SCADA Layer:** Siemens WinCC Unified / Advanced V20
+* **Emulated PLC Hardware:** SIMATIC S7-1500 (CPU 1516-3 PN/DP)
+* **Simulation Testing Engine:** Siemens S7-PLCSIM V20 / PLCSIM Advanced
+* **Control Languages:** SCL (Structured Control Language / Structured Text)
+* **Network Protocol:** PROFINET / Industrial Ethernet architecture
 
 ---
 
 ## 💻 Core Logic Implementation (SCL Architecture)
 
-The control system executes deterministically within a cyclic interrupt block (`OB35`) clocked at a 100ms time-step interval to maintain true mathematical integration precision[cite: 32, 164].
+The control system executes deterministically within a cyclic interrupt block (`OB35`) clocked at a 100ms time-step interval to maintain true mathematical integration precision.
 
 ### 1. Power Consumption Diagnostics & Predictive Maintenance Wear
-Tracks the physical runtime hours of the pump motor and integrates instantaneous electrical current data to compute energy draw (kWh)[cite: 165, 166]:
+Tracks the physical runtime hours of the pump motor and integrates instantaneous electrical current data to compute energy draw (kWh):
 
     // Predictive Maintenance & Power Diagnostics
     IF "Date_Pompa".Motor.Pornit THEN
@@ -60,7 +60,7 @@ Tracks the physical runtime hours of the pump motor and integrates instantaneous
     END_IF;
 
 ### 2. Auto-Refill Reservoir Hysteresis & Financial SEC Tracking
-Manages supply levels while including explicit math fault exceptions (division-by-zero protection) to guarantee that the PLC CPU never enters a `STOP` state during operation[cite: 181]:
+Manages supply levels while including explicit math fault exceptions (division-by-zero protection) to guarantee that the PLC CPU never enters a `STOP` state during operation:
 
     // Automated Hysteresis Reservoir Loop (20% - 95%)
     IF "Date_Pompa".Nivel_Rezervor < 20.0 THEN
@@ -115,7 +115,7 @@ Ensure your engineering workstation has the following Siemens software packages 
 
 ## 🔒 License, Copyright & Confidentiality Terms
 
-**Copyright © 2026 Ioan-Mădălin Munteanu. All rights reserved.** [cite: 3, 4]
+**Copyright © 2026 Ioan-Mădălin Munteanu. All rights reserved.**
 
 This project is strictly **proprietary and confidential**. The source code, software architecture, DB schemes, SCL routines, and graphical HMI layout assets are published publicly on GitHub **SORELY for portfolio evaluation, academic auditing, and technical interview demonstration purposes** by prospective employers and technical recruiters.
 
